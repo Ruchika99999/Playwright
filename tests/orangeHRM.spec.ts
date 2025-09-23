@@ -93,9 +93,9 @@ test.describe("OrangeHRM Automate", () => {
     await expect(page.locator('//span[text()="(1) Record Found"]')).toHaveText(record);
 })
 
-  // test.afterAll(async () => {
-  //   await page.close();
-  //   await context.close();
-  //   await browser.close();
-  // });
+  test.afterAll(async () => {
+    await page.close();
+    await context.close();
+    await browser.close();
+  });
 });
