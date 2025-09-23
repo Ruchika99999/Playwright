@@ -37,7 +37,7 @@ test.describe("OrangeHRM Automate", () => {
     //Do login using with Incorrect credentials
     await loginPage.login(login2.username, login2.password);
   });
-  test.only("ORM_LGN_FN_TC0003", async () => {
+  test("ORM_LGN_FN_TC0003", async () => {
     const loginPage = new LoginMethod(page);
     const login3 = logindata.Correct;
     await page.getByText('Forgot your password? ').click();
