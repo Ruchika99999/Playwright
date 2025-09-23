@@ -13,13 +13,15 @@ test.describe("OrangeHRM Automate", () => {
   let page: Page;
 
   // Setup: Launch browser and create new context/page before all tests
-  test.beforeAll(async () => {
-    test.setTimeout(120_000);
-    browser = await chromium.launch();
-    context = await browser.newContext();
-    page = await context.newPage();
-    await page.goto(urls.LoginURL);
-  });
+ test.beforeAll(async () => {
+  test.setTimeout(120_000);
+  const isCI = process.env.CI === 'true' || process.platform === 'win32';
+  browser = await chromium.launch({ headless: isCI });
+  context = await browser.newContext();
+  page = await context.newPage();
+  await page.goto(urls.LoginURL);
+});
+
   // Test Case 1: Login with correct credentials
   test("ORM_LGN_FN_TC0001", async ({ page }) => {
     // Instantiate LoginPage object
@@ -52,10 +54,44 @@ test.describe("OrangeHRM Automate", () => {
   await page.getByText('Forgot your password? ').click();
   await page.locator('button[type="button"]').click();
   await expect(page).toHaveURL('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login');
+})
 
-
-
-  })
+   test('ORM_SRHRQ_TC0001',async()=>{
+    const loginPage = new LoginMethod(page);
+    const login4 = logindata.Correct;
+    await loginPage.login(login4.username, login4.password);
+    await page.locator('//span[text()="Recruitment"]').click();
+    await page.locator('//a[text()="Vacancies"]').click();
+    await page.getByText('-- Select --').first().click();
+    await page.getByRole('option', { name: 'QA Lead' }).click();
+    await page.getByText('-- Select --').first().click();
+    await page.getByRole('option', { name: 'Senior QA Lead' }).locator('span').click();
+    await page.getByText('-- Select --').first().click();
+    await page.getByRole('option', { name: 'Weber Bricks' }).locator('span').click();
+    await page.locator('div').filter({ hasText: /^-- Select --$/ }).nth(2).click();
+    await page.getByRole('option', { name: 'Active' }).click();
+    await page.getByRole('button', { name: 'Search' }).click();
+    const record='(1) Record Found';
+    await expect(page.locator('//span[text()="(1) Record Found"]')).toHaveText(record);
+})
+  test('ORM_SRHRQ_TC0002',async()=>{
+    const loginPage = new LoginMethod(page);
+    const login4 = logindata.Correct;
+    await loginPage.login(login4.username, login4.password);
+    await page.locator('//span[text()="Recruitment"]').click();
+    await page.locator('//a[text()="Vacancies"]').click();
+    await page.getByText('-- Select --').first().click();
+    await page.getByRole('option', { name: 'Automation Tester' }).click();
+    await page.getByText('-- Select --').first().click();
+    await page.getByRole('option', { name: 'Playwright Automation Tester' }).locator('span').click();
+    await page.getByText('-- Select --').first().click();
+    await page.getByRole('option', { name: 'John Doe' }).locator('span').click();
+    await page.locator('div').filter({ hasText: /^-- Select --$/ }).nth(2).click();
+    await page.getByRole('option', { name: 'Closed' }).click();
+    await page.getByRole('button', { name: ' Search ' }).click();
+    const record='(1) Record Found';
+    await expect(page.locator('//span[text()="(1) Record Found"]')).toHaveText(record);
+})
 
   // test.afterAll(async () => {
   //   await page.close();
