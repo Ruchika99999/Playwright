@@ -1,10 +1,10 @@
 export const logindata = {
-  Login: {
-    username: "Admin",
-    password: "admin123"
+  Incorrect: {
+    username: "wrongUser",
+    password: "wrongPass"
   },
-  Incorrect:{
-    username: "Admin",
-    password: "admin@123"
+  Correct: {
+    username: "admin",
+    password: "admin123"
   }
 };
